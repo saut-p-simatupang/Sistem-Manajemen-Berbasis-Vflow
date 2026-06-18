@@ -6,7 +6,12 @@ const rateLimitMiddleware = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/errorHandler');
 const healthRoute = require('./routes/health');
 const pesananRoute = require('./routes/pesanan');
-
+console.log("=== DEBUG SERVER ===");
+console.log("rateLimitMiddleware:", typeof rateLimitMiddleware);
+console.log("errorHandler:", typeof errorHandler);
+console.log("healthRoute:", typeof healthRoute);
+console.log("pesananRoute:", typeof pesananRoute);
+console.log("====================");
 const app = express();
 
 app.use(express.json());

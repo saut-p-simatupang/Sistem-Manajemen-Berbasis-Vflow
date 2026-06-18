@@ -3,7 +3,10 @@ const router = express.Router();
 const axios = require('axios');
 const auth = require('../middleware/auth');
 const validate = require('../middleware/validate');
-
+console.log("=== DEBUG PESANAN ===");
+console.log("auth:", typeof auth);
+console.log("validate:", typeof validate);
+console.log("=====================");
 const forwardToVFlow = (path) => async (req, res, next) => {
     try {
         const response = await axios.post(`${process.env.VFLOW_HOST}${path}`, req.body);
