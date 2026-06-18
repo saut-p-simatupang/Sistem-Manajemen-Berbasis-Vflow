@@ -1,0 +1,13 @@
+dialect: vflow
+version: "3.0"
+metadata:
+  name: db-connector
+type: ConnectorConfig
+properties:
+  id: "pack://umkm/db" # Harus sama dengan connector_ref di file workflow
+  driver: "postgresql"
+  host: "workflow-db.pake-umkm.app"
+  port: 5432
+  database: "db_umkm_vflow"
+  username: "postgres"
+  password: "Always_Blue"
