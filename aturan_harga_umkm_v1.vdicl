@@ -1,35 +1,19 @@
-# =========================================================================
-# RULE PACK: aturan_harga_umkm_v1
-# Deskripsi: Logika Kalkulasi Finansial Transaksi UMKM (Kelompok 3)
-# Input Facts: subtotal, total_item, tipe_pelanggan, metode_pembayaran, metode_pengambilan
-# =========================================================================
-
-# Aturan 1: Diskon Bertingkat (Grosir)
-# Jika total item yang dibeli 10 atau lebih, berikan diskon dasar 10% dari subtotal
 RULE "Diskon Grosir Bertingkat"
 WHEN total_item >= 10
 THEN diskon = subtotal * 0.10
 
-# Aturan 2: Hak Istimewa Member
-# Jika pelanggan adalah 'member', berikan tambahan diskon sebesar 5% dari subtotal
-RULE "Diskon Loyalitas Member"
+RULE "Diskon Member"
 WHEN tipe_pelanggan == "member"
 THEN diskon = diskon + (subtotal * 0.05)
 
-# Aturan 3: Biaya Admin Berdasarkan Metode Pembayaran
-# Pembayaran menggunakan ewallet dikenakan biaya admin Rp 2.000 untuk integrasi gateway
 RULE "Biaya Admin E-Wallet"
 WHEN metode_pembayaran == "ewallet"
 THEN biaya_admin = 2000
 
-# Aturan 4: Biaya Pengiriman Berdasarkan Metode Pengambilan
-# Jika memilih 'delivery', dikenakan ongkir flat Rp 10.000. Jika 'takeaway', gratis.
 RULE "Biaya Pengiriman Delivery"
 WHEN metode_pengambilan == "delivery"
 THEN biaya_pengiriman = 10000
 
-# Aturan 5: Penanganan Default (Fallback)
-# Memastikan semua variabel hasil kalkulasi tidak bernilai null/kosong jika aturan di atas tidak terpenuhi
 RULE "Sistem Perlindungan Nilai Default"
 WHEN true
 THEN 
