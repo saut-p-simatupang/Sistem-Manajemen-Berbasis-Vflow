@@ -1,0 +1,75 @@
+version: 1
+decision_id: aturan_harga_umkm_v1
+decision_name: Aturan Harga UMKM
+hit_policy: RULE_ORDER
+schema:
+  inputs:
+    - name: subtotal
+      type: number
+      expression: input.subtotal
+    - name: total_item
+      type: number
+      expression: input.total_item
+    - name: tipe_pelanggan
+      type: string
+      expression: input.tipe_pelanggan
+    - name: metode_pembayaran
+      type: string
+      expression: input.metode_pembayaran
+    - name: metode_pengambilan
+      type: string
+      expression: input.metode_pengambilan
+  outputs:
+    - name: diskon
+      type: number
+    - name: biaya_admin
+      type: number
+    - name: biaya_pengiriman
+      type: number
+
+rules:
+  - id: r_diskon_grosir_bertingkat
+    description: Potongan 10% jika membeli 10 item atau lebih
+    when: total_item >= 10
+    then:
+      - kind: EVAL_SET_FIELD
+        path: diskon
+        expr: subtotal * 0.10
+
+  - id: r_diskon_member
+    description: Potongan tambahan 5% untuk pelanggan member
+    when: tipe_pelanggan == "member"
+    then:
+      - kind: EVAL_SET_FIELD
+        path: diskon
+        expr: COALESCE(diskon, 0) + (subtotal * 0.05)
+
+  - id: r_biaya_admin_ewallet
+    description: Biaya admin Rp 2.000 jika pembayaran ewallet
+    when: metode_pembayaran == "ewallet"
+    then:
+      - kind: EVAL_SET_FIELD
+        path: biaya_admin
+        expr: 2000
+
+  - id: r_biaya_pengiriman_delivery
+    description: Biaya pengiriman Rp 10.000 jika menggunakan metode delivery
+    when: metode_pengambilan == "delivery"
+    then:
+      - kind: EVAL_SET_FIELD
+        path: biaya_pengiriman
+        expr: 10000
+
+  - id: r_default_fallbacks
+    description: Perlindungan nilai default untuk mencegah output bernilai null
+    when: true
+    then:
+      - kind: EVAL_SET_FIELD
+        path: diskon
+        expr: COALESCE(diskon, 0)
+      - kind: EVAL_SET_FIELD
+        path: biaya_admin
+        expr: COALESCE(biaya_admin, 0)
+      - kind: EVAL_SET_FIELD
+        path: biaya_pengiriman
+        expr: COALESCE(biaya_pengiriman, 0)
