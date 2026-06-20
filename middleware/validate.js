@@ -20,10 +20,14 @@ const schemas = {
     'konfirmasi-pembayaran': Joi.object({
         pesanan_id: Joi.number().required(),
         total_tagihan: Joi.number().min(0).required(),
-        nominal_dibayar: Joi.number().min(0).required() // Berdasarkan Workflow 4 [cite: 49]
+        nominal_dibayar: Joi.number().min(0).required(),
+        metode_pembayaran: Joi.string().required().allow('') // Menambahkan izin parameter metode_pembayaran agar diterima VFlow
     }),
     'penyelesaian-pesanan': Joi.object({
-        pesanan_id: Joi.number().required() // Berdasarkan Workflow 5 [cite: 50]
+    // ... field lain ...
+    metode_pengambilan: Joi.string().required().allow('Ambil Sendiri', 'Kurir'),
+    jumlah: Joi.number().required().allow(), 
+    produk_id: Joi.string().required().allow(),
     }),
     'audit-log': Joi.object({
         pesanan_id: Joi.number().required(),
