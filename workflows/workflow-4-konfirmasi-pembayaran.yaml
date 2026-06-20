@@ -2,6 +2,7 @@ dialect: vflow
 version: "3.0"
 metadata:
   name: w4-konfirmasi-pembayaran
+<<<<<<< HEAD
 spec:
   activities:
     - id: start_trigger
@@ -62,3 +63,41 @@ spec:
         from: { node: transform_gagal_bayar },
         to: { node: end_response },
       }
+=======
+activities:
+  - id: start_trigger
+    type: Trigger
+    properties:
+      type: webhook
+      runtime_mode: fastpath
+  - id: check_pembayaran
+    type: ExclusiveGateway
+    properties:
+      conditions:
+        - expression: "input.nominal_dibayar >= input.total_tagihan"
+          transition_to: update_db_lunas
+      default: transform_gagal_bayar
+  - id: update_db_lunas
+    type: Connector
+    properties:
+      connector_ref: "pack://umkm/db"
+      query: "UPDATE pesanan SET status = 'dibayar', metode_pembayaran = :metode_pembayaran WHERE id = :pesanan_id;"
+  - id: transform_sukses
+    type: Transform
+    properties:
+      expression_language: v-cel
+      mapping:
+        status: "'success'"
+        kembalian: "input.nominal_dibayar - input.total_tagihan"
+        message: "'Pembayaran berhasil dikonfirmasi'"
+  - id: transform_gagal_bayar
+    type: Transform
+    properties:
+      expression_language: v-cel
+      mapping:
+        status: "'failed'"
+        kembalian: 0
+        message: "'Uang yang dibayarkan kurang'"
+  - id: end_response
+    type: EndTrigger
+>>>>>>> b164c1ed62a1d5d4be517a5e76338bda791aef3d

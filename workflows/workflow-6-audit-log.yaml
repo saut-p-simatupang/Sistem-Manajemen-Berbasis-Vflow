@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 dialect: vflow
 version: "3.0"
 metadata:
@@ -19,3 +20,22 @@ spec:
   flows:
     - { id: f1, from: { node: event_trigger }, to: { node: write_log } }
     - { id: f2, from: { node: write_log }, to: { node: end_response } }
+=======
+dialect: vflow
+version: "3.0"
+metadata:
+  name: w6-audit-log
+activities:
+  - id: event_trigger
+    type: Trigger
+    properties:
+      type: detached_edge
+      runtime_mode: fastpath
+  - id: write_log
+    type: Connector
+    properties:
+      connector_ref: "pack://umkm/db"
+      query: "INSERT INTO audit_log (event_type, payload) VALUES (:aktivitas_tipe, :payload_log);"
+  - id: end_response
+    type: EndTrigger
+>>>>>>> b164c1ed62a1d5d4be517a5e76338bda791aef3d
