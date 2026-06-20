@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 dialect: vflow
 version: "3.0"
 metadata:
@@ -15,3 +16,22 @@ activities:
       query: "INSERT INTO audit_log (aktivitas, rincian) VALUES (:action_name, :details);"
   - id: end_response
     type: EndTrigger
+=======
+dialect: vflow
+version: "3.0"
+metadata:
+  name: w6-audit-log
+activities:
+  - id: event_trigger
+    type: Trigger
+    properties:
+      type: detached_edge
+      runtime_mode: fastpath
+  - id: write_log
+    type: Connector
+    properties:
+      connector_ref: "pack://umkm/db"
+      query: "INSERT INTO audit_log (aktivitas, rincian) VALUES (:action_name, :details);"
+  - id: end_response
+    type: EndTrigger
+>>>>>>> 79a2c4081b76828a9835b0c47124c1463a408645

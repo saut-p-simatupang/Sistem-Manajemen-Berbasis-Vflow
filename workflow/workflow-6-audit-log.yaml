@@ -1,0 +1,17 @@
+dialect: vflow
+version: "3.0"
+metadata:
+  name: w6-audit-log
+activities:
+  - id: event_trigger
+    type: Trigger
+    properties:
+      type: detached_edge
+      runtime_mode: fastpath
+  - id: write_log
+    type: Connector
+    properties:
+      connector_ref: "pack://umkm/db"
+      query: "INSERT INTO audit_log (aktivitas, rincian) VALUES (:action_name, :details);"
+  - id: end_response
+    type: EndTrigger
