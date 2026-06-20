@@ -1,0 +1,31 @@
+version: 1
+schema_version: 1
+namespace: umkm
+domain: umkm
+entity: pesanan
+fields:
+  - name: subtotal
+    path: subtotal
+    type: number
+    scalar: F64
+    nullable: false
+  - name: total_item
+    path: total_item
+    type: number
+    scalar: F64
+    nullable: false
+  - name: tipe_pelanggan
+    path: tipe_pelanggan
+    type: string
+    scalar: BYTES
+    nullable: false
+  - name: metode_pembayaran
+    path: metode_pembayaran
+    type: string
+    scalar: BYTES
+    nullable: false
+  - name: metode_pengambilan
+    path: metode_pengambilan
+    type: string
+    scalar: BYTES
+    nullable: false

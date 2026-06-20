@@ -22,5 +22,9 @@ router.post('/validasi-stok', auth, validate('validasi-stok'), forwardToVFlow('/
 router.post('/kalkulasi-tagihan', auth, validate('kalkulasi-tagihan'), forwardToVFlow('/webhook/w3-kalkulasi-tagihan'));
 router.post('/konfirmasi-pembayaran', auth, validate('konfirmasi-pembayaran'), forwardToVFlow('/webhook/w4-konfirmasi-pembayaran'));
 router.post('/penyelesaian-pesanan', auth, validate('penyelesaian-pesanan'), forwardToVFlow('/webhook/w5-penyelesaian-pesanan'));
+<<<<<<< HEAD
+=======
+router.post('/audit-log', auth, validate('audit-log'), forwardToVFlow('/webhook/w6-audit-log'));
+>>>>>>> 32db6d164bb00fd3bf79f89469cd533a9191b245
 
 module.exports = router;
