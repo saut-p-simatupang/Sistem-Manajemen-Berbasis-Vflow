@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const rateLimitMiddleware = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/errorHandler');
-const healthRoute = require('./routes/health');
+const healthRoute = require('./routes/health'); 
 const pesananRoute = require('./routes/pesanan');
 console.log("=== DEBUG SERVER ===");
 console.log("rateLimitMiddleware:", typeof rateLimitMiddleware);
@@ -13,6 +13,7 @@ console.log("healthRoute:", typeof healthRoute);
 console.log("pesananRoute:", typeof pesananRoute);
 console.log("====================");
 const app = express();
+app.set('trust proxy', 1);
 
 app.use(express.json());
 app.use(cors());
