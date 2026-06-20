@@ -1,0 +1,64 @@
+dialect: vflow
+version: "3.0"
+metadata:
+  name: w4-konfirmasi-pembayaran
+spec:
+  activities:
+    - id: start_trigger
+      activity_type: Trigger
+      properties:
+        type: webhook
+        runtime_mode: fastpath
+    - id: check_pembayaran
+      activity_type: ExclusiveGateway
+      properties:
+        conditions:
+          - expression: "input.nominal_dibayar >= input.total_tagihan"
+            transition_to: update_db_lunas
+        default: transform_gagal_bayar
+    - id: update_db_lunas
+      activity_type: Connector
+      properties:
+        connector_ref: "pack://umkm/db"
+        query: "UPDATE pesanan SET status = 'dibayar', metode_pembayaran = :metode_pembayaran WHERE id = :pesanan_id;"
+    - id: transform_sukses
+      activity_type: Transform
+      properties:
+        expression_language: v-cel
+        mapping:
+          status: "'success'"
+          kembalian: "input.nominal_dibayar - input.total_tagihan"
+          message: "'Pembayaran berhasil dikonfirmasi'"
+    - id: transform_gagal_bayar
+      activity_type: Transform
+      properties:
+        expression_language: v-cel
+        mapping:
+          status: "'failed'"
+          kembalian: 0
+          message: "'Uang yang dibayarkan kurang'"
+    - id: end_response
+      activity_type: EndTrigger
+  flows:
+    - { id: f1, from: { node: start_trigger }, to: { node: check_pembayaran } }
+    - {
+        id: f2,
+        from: { node: check_pembayaran },
+        to: { node: update_db_lunas },
+      }
+    - {
+        id: f3,
+        from: { node: check_pembayaran },
+        to: { node: transform_gagal_bayar },
+      }
+    - {
+        id: f4,
+        from: { node: update_db_lunas },
+        to: { node: transform_sukses },
+      }
+    - { id: f5, from: { node: transform_sukses }, to: { node: end_response } }
+    - {
+        id: f6,
+        from: { node: transform_gagal_bayar },
+        to: { node: end_response },
+      }

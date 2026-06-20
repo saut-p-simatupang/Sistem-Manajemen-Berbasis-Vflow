@@ -1,0 +1,35 @@
+dialect: vflow
+version: "3.0"
+metadata:
+  name: w5-penyelesaian-pesanan
+spec:
+  activities:
+    - id: start_trigger
+      activity_type: Trigger
+      properties:
+        type: webhook
+        runtime_mode: fastpath
+    - id: settle_pesanan
+      activity_type: Connector
+      properties:
+        connector_ref: "pack://umkm/db"
+        query: "UPDATE pesanan SET status = 'selesai', metode_pengambilan = :metode_pengambilan WHERE id = :pesanan_id;"
+    - id: reduce_stok
+      activity_type: Connector
+      properties:
+        connector_ref: "pack://umkm/db"
+        query: "UPDATE produk SET stok = stok - :jumlah WHERE id = :produk_id;"
+    - id: transform_final
+      activity_type: Transform
+      properties:
+        expression_language: v-cel
+        mapping:
+          status: "'completed'"
+          message: "'Pesanan selesai dan stok berhasil diperbarui'"
+    - id: end_response
+      activity_type: EndTrigger
+  flows:
+    - { id: f1, from: { node: start_trigger }, to: { node: settle_pesanan } }
+    - { id: f2, from: { node: settle_pesanan }, to: { node: reduce_stok } }
+    - { id: f3, from: { node: reduce_stok }, to: { node: transform_final } }
+    - { id: f4, from: { node: transform_final }, to: { node: end_response } }

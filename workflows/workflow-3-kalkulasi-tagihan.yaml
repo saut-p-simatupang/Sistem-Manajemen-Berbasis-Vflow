@@ -1,0 +1,38 @@
+dialect: vflow
+version: "3.0"
+metadata:
+  name: w3-kalkulasi-tagihan
+spec:
+  activities:
+    - id: start_trigger
+      activity_type: Trigger
+      properties:
+        type: webhook
+        runtime_mode: fastpath
+    - id: call_vrule
+      activity_type: VRule
+      properties:
+        rule_set_id: "aturan_harga_umkm_v1"
+        eval_mode: bytecode
+        input_mappings:
+          subtotal: "input.subtotal"
+          total_item: "input.total_item"
+          tipe_pelanggan: "input.tipe_pelanggan"
+          metode_pembayaran: "input.metode_pembayaran"
+          metode_pengambilan: "input.metode_pengambilan"
+    - id: calculate_total
+      activity_type: Transform
+      properties:
+        expression_language: v-cel
+        mapping:
+          subtotal: "input.subtotal"
+          diskon: "activity.call_vrule.result.diskon"
+          biaya_admin: "activity.call_vrule.result.biaya_admin"
+          biaya_pengiriman: "activity.call_vrule.result.biaya_pengiriman"
+          total_tagihan: "input.subtotal - activity.call_vrule.result.diskon + activity.call_vrule.result.biaya_admin + activity.call_vrule.result.biaya_pengiriman"
+    - id: end_response
+      activity_type: EndTrigger
+  flows:
+    - { id: f1, from: { node: start_trigger }, to: { node: call_vrule } }
+    - { id: f2, from: { node: call_vrule }, to: { node: calculate_total } }
+    - { id: f3, from: { node: calculate_total }, to: { node: end_response } }

@@ -1,0 +1,30 @@
+dialect: vflow
+version: "3.0"
+metadata:
+  name: w1-buka-keranjang
+spec:
+  activities:
+    - id: start_trigger
+      activity_type: Trigger
+      properties:
+        type: webhook
+        runtime_mode: fastpath
+    - id: insert_db
+      activity_type: Connector
+      properties:
+        connector_ref: "pack://umkm/db"
+        query: "INSERT INTO pesanan (id_pelanggan, status, subtotal, total_harga) VALUES (:pelanggan_id, 'pending', 0, 0) RETURNING id;"
+    - id: transform_response
+      activity_type: Transform
+      properties:
+        expression_language: v-cel
+        mapping:
+          status: "'success'"
+          pesanan_id: "activity.insert_db.result[0].id"
+          message: "'Keranjang berhasil dibuka'"
+    - id: end_response
+      activity_type: EndTrigger
+  flows:
+    - { id: f1, from: { node: start_trigger }, to: { node: insert_db } }
+    - { id: f2, from: { node: insert_db }, to: { node: transform_response } }
+    - { id: f3, from: { node: transform_response }, to: { node: end_response } }
