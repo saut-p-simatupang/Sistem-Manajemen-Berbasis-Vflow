@@ -20,28 +20,14 @@ const schemas = {
     'konfirmasi-pembayaran': Joi.object({
         pesanan_id: Joi.number().required(),
         total_tagihan: Joi.number().min(0).required(),
-<<<<<<< HEAD
         nominal_dibayar: Joi.number().min(0).required(),
-        metode_pembayaran: Joi.string().required().allow('') // Menambahkan izin parameter metode_pembayaran agar diterima VFlow
+        metode_pembayaran: Joi.string().allow('', null) // Menambahkan izin parameter metode_pembayaran agar diterima VFlow
     }),
     'penyelesaian-pesanan': Joi.object({
-    // ... field lain ...
-    metode_pengambilan: Joi.string().required().allow('Ambil Sendiri', 'Kurir'),
-    jumlah: Joi.number().required().allow(), 
-    produk_id: Joi.string().required().allow(),
-=======
-        nominal_dibayar: Joi.number().min(0).required() // Berdasarkan Workflow 4 [cite: 49]
-    }),
-    'penyelesaian-pesanan': Joi.object({
-        pesanan_id: Joi.number().required() // Berdasarkan Workflow 5 [cite: 50]
->>>>>>> 32db6d164bb00fd3bf79f89469cd533a9191b245
-    }),
-    'audit-log': Joi.object({
         pesanan_id: Joi.number().required(),
-        aktor_id: Joi.number().required(),
-        aktivitas_tipe: Joi.string().required(),
-        payload_log: Joi.object().required(),
-        waktu_kejadian: Joi.string().required() // Berdasarkan Workflow 6 [cite: 51]
+        metode_pengambilan: Joi.string().allow('', null),
+        jumlah: Joi.number().allow('', null),
+        produk_id: Joi.number().allow('', null)
     })
 };
 
